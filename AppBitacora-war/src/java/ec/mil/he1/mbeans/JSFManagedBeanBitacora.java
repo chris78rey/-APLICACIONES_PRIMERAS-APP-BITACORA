@@ -31,6 +31,20 @@ import javax.servlet.http.HttpSession;
 @ViewScoped
 public class JSFManagedBeanBitacora implements Serializable {
 
+    /**
+     * @return the dateHoraSolucion
+     */
+    public Date getDateHoraSolucion() {
+        return dateHoraSolucion;
+    }
+
+    /**
+     * @param dateHoraSolucion the dateHoraSolucion to set
+     */
+    public void setDateHoraSolucion(Date dateHoraSolucion) {
+        this.dateHoraSolucion = dateHoraSolucion;
+    }
+
     @EJB
     private SesionSeguridades sesionSeguridades;
 
@@ -42,6 +56,7 @@ public class JSFManagedBeanBitacora implements Serializable {
     private String hora = "";
 
     private Date date10;
+    private Date dateHoraSolucion;
 
     private VUsuariosClasif findByCedulaLogin = new VUsuariosClasif();
 
@@ -66,18 +81,29 @@ public class JSFManagedBeanBitacora implements Serializable {
 
         try {
             String strDate1;
+            String strDateHoraSolucion;
 
             SimpleDateFormat sm = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+            SimpleDateFormat smhorasolucion = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
             strDate1 = sm.format(date10);
+            strDateHoraSolucion = smhorasolucion.format(getDateHoraSolucion());
+
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) context.getExternalContext().getSession(true);
             vUsuariosClasif = (VUsuariosClasif) session.getAttribute("vUsuariosClasif");
-            sesionSeguridades.p_registra_evento(strDate1, bitacora.getArea(), bitacora.getEvento(), bitacora.getSolucion(), vUsuariosClasif.getId().toEngineeringString());
+            System.out.println("strDate1 = " + strDate1);
+            System.out.println("strDateHoraSolucion = " + strDateHoraSolucion);
+            sesionSeguridades.p_registra_evento(strDate1, bitacora.getArea(), bitacora.getEvento(), bitacora.getSolucion(), vUsuariosClasif.getId().toEngineeringString(), strDateHoraSolucion);
 
             if (vUsuariosClasif.getId() != null) {
                 lsegBitacoras = sesionSeguridades.findBitacoraRecientes();
                 bitacora = new SegBitacora();
                 strDate1 = "";
+
+                date10 = new Date();
+                dateHoraSolucion = new Date(null);
             }
 
         } catch (Exception e) {
@@ -85,7 +111,8 @@ public class JSFManagedBeanBitacora implements Serializable {
         }
 
     }
-  /**
+
+    /**
      * Creates a new instance of JSFManagedBeanBitacora
      */
     public JSFManagedBeanBitacora() {

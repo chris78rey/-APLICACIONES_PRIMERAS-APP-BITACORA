@@ -29,8 +29,14 @@
                                 <f:selectItem itemLabel="" itemValue="%" />
                                 <f:selectItems value="#{consulta.lsobtwarebitacora}"  var="item"  itemLabel="#{item.modulo}" itemValue="#{item.modulo}"/>
                             </p:selectOneMenu>
+
+
+
                             <p:outputLabel  value="Hora de evento:" />
                             <p:calendar id="datetime" value="#{bitac.date10}" pattern="dd/MM/yyyy HH:mm:ss" />
+
+                            <p:outputLabel  value="Hora de resolución:" />
+                            <p:calendar id="datetimeHoraSolucion" value="#{bitac.dateHoraSolucion}" pattern="dd/MM/yyyy HH:mm:ss" />
 
 
                             <p:outputLabel value="Evento:"  />
@@ -65,19 +71,28 @@
 
                         <p:dataTable id="tbl1" paginator="true" rows="4"  style="font-size: 13px;width: 95%"  value="#{bitac.lsegBitacoras}" var="item">
 
-                            <p:column style="font-size: 13px;width: 90px" >
-                                <f:facet name="header">
-                                    <h:outputText value="Hora Registro"/>
-                                </f:facet>
-                                <h:outputText value="#{item.fecha}">
-                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                                </h:outputText>
-                            </p:column>
+
                             <p:column style="font-size: 13px;width:  90px" >
                                 <f:facet name="header">
                                     <h:outputText value="Hora Evento"/>
                                 </f:facet>
                                 <h:outputText value="#{item.hora}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column style="font-size: 13px;width:  90px" >
+                                <f:facet name="header">
+                                    <h:outputText value="Hora Solución"/>
+                                </f:facet>
+                                <h:outputText value="#{item.horaSolucion}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column style="font-size: 13px;width: 90px" >
+                                <f:facet name="header">
+                                    <h:outputText value="Hora Registro"/>
+                                </f:facet>
+                                <h:outputText value="#{item.fecha}">
                                     <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                                 </h:outputText>
                             </p:column>

@@ -72,7 +72,7 @@ public class RecibeUsuarioFinal extends HttpServlet {
             response.sendRedirect(buscaURLSiguiente);
 
         } catch (SQLException | NamingException | NumberFormatException e) {
-            System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("ec/mil/he1/mbeans/propiedades").getString("E.GETLOCALIZEDMESSAGE() = {0}"), new Object[] {e.getLocalizedMessage())});
+//            System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("ec/mil/he1/mbeans/propiedades").getString("E.GETLOCALIZEDMESSAGE() = {0}"), new Object[] {e.getLocalizedMessage()));
         }
 
     }

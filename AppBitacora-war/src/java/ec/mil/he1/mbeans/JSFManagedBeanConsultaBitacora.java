@@ -5,10 +5,11 @@
  */
 package ec.mil.he1.mbeans;
 
-import static com.sun.javafx.logging.PulseLogger.addMessage;
 import he1.seguridades.entities.nuevos.SegSoftwareBitacora;
+import he1.seguridades.entities.nuevos.VTiemposSolucion;
 import he1.seguridades.entities.nuevos.VUsuariosClasif;
 import he1.seguridades.sessions.SegSoftwareBitacoraFacade;
+import he1.seguridades.sessions.nuevos.VTiemposSolucionFacade;
 import he1.utilities.SesionSeguridades;
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
@@ -17,13 +18,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.CategoryAxis;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
 
+//import org.primefaces.model.chart.Axis;
+//import org.primefaces.model.chart.AxisType;
+//import org.primefaces.model.chart.CategoryAxis;
+//import org.primefaces.model.chart.LineChartModel;
+//import org.primefaces.model.chart.ChartSeries;
 /**
  *
  * @author christian_ruiz
@@ -31,6 +43,11 @@ import javax.servlet.http.HttpSession;
 @ManagedBean(name = "consulta")
 @RequestScoped
 public class JSFManagedBeanConsultaBitacora implements Serializable {
+
+    @EJB
+    private VTiemposSolucionFacade vTiemposSolucionFacade;
+
+    private List<VTiemposSolucion> ltiempos = new ArrayList<>();
 
     @EJB
     private SegSoftwareBitacoraFacade segSoftwareBitacoraFacade;
@@ -44,8 +61,12 @@ public class JSFManagedBeanConsultaBitacora implements Serializable {
     private String parametro = "";
     private VUsuariosClasif findByCedulaLogin = new VUsuariosClasif();
 
+    private LineChartModel lineModel1;
+    private LineChartModel lineModel2;
+
     @PostConstruct
     private void init() {
+
         try {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
@@ -58,6 +79,133 @@ public class JSFManagedBeanConsultaBitacora implements Serializable {
             Logger.getLogger(JSFManagedBeanConsultaBitacora.class.getName()).log(Level.WARNING, null, ex);
         }
 
+        try {
+            createLineModels();
+        } catch (Exception e) {
+            Logger.getLogger(JSFManagedBeanConsultaBitacora.class.getName()).log(Level.WARNING, null, e);
+        }
+
+    }
+
+    public LineChartModel getLineModel1() {
+        return lineModel1;
+    }
+
+    public LineChartModel getLineModel2() {
+        return lineModel2;
+    }
+
+    private void createLineModels() {
+        lineModel1 = initLinearModel();
+        lineModel1.setTitle("Linear Chart");
+        lineModel1.setLegendPosition("e");
+        Axis yAxis = lineModel1.getAxis(AxisType.Y);
+        yAxis.setMin(0);
+        yAxis.setMax(10);
+
+        lineModel2 = initCategoryModel();
+        lineModel2.setTitle("Número de Incidentes en TICS");
+        lineModel2.setLegendPosition("e");
+        lineModel2.setShowPointLabels(true);
+        lineModel2.getAxes().put(AxisType.X, new CategoryAxis("Año"));
+        yAxis = lineModel2.getAxis(AxisType.Y);
+        yAxis.setLabel("Número de Incidentes");
+        yAxis.setMin(0);
+        yAxis.setMax(200);
+    }
+
+    private LineChartModel initLinearModel() {
+        LineChartModel model = new LineChartModel();
+
+        LineChartSeries series1 = new LineChartSeries();
+        series1.setLabel("Series 1");
+
+        series1.set(1, 2);
+        series1.set(2, 1);
+        series1.set(3, 3);
+        series1.set(4, 6);
+        series1.set(5, 8);
+
+        LineChartSeries series2 = new LineChartSeries();
+        series2.setLabel("Series 2");
+
+        series2.set(1, 6);
+        series2.set(2, 3);
+        series2.set(3, 2);
+        series2.set(4, 7);
+        series2.set(5, 9);
+
+        model.addSeries(series1);
+        model.addSeries(series2);
+
+        return model;
+    }
+
+    private LineChartModel initCategoryModel() {
+        LineChartModel model = new LineChartModel();
+
+//<editor-fold defaultstate="collapsed" desc="comment">
+        ChartSeries basedatos = new ChartSeries();
+        ltiempos.clear();
+        ltiempos = vTiemposSolucionFacade.findTiemposSolucion("BASE DE DATOS");
+        basedatos.setLabel("BASE DE DATOS");
+        for (VTiemposSolucion ltiempo : ltiempos) {
+            basedatos.set(ltiempo.getAnio(), Integer.parseInt(ltiempo.getIncidentes()));
+            System.out.println("bdd ltiempo.getIncidentes() = " + ltiempo.getIncidentes());
+        }
+
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="comment">
+        ChartSeries REDES = new ChartSeries();
+        ltiempos.clear();
+        ltiempos = vTiemposSolucionFacade.findTiemposSolucion("REDES");
+        REDES.setLabel("REDES");
+        for (VTiemposSolucion ltiempo : ltiempos) {
+            REDES.set(ltiempo.getAnio(), Integer.parseInt(ltiempo.getIncidentes()));
+            System.out.println("redes ltiempo.getIncidentes() = " + ltiempo.getIncidentes());
+        }
+
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="comment">
+        ChartSeries INFRAESTRUCTURA = new ChartSeries();
+        ltiempos.clear();
+        ltiempos = vTiemposSolucionFacade.findTiemposSolucion("INFRAESTRUCTURA");
+        INFRAESTRUCTURA.setLabel("INFRAESTRUCTURA");
+        for (VTiemposSolucion ltiempo : ltiempos) {
+            INFRAESTRUCTURA.set(ltiempo.getAnio(), Integer.parseInt(ltiempo.getIncidentes()));
+            System.out.println("infra ltiempo.getIncidentes() = " + ltiempo.getIncidentes());
+        }
+
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="comment">
+        ChartSeries DESARROLLO = new ChartSeries();
+        ltiempos.clear();
+        ltiempos = vTiemposSolucionFacade.findTiemposSolucion("DESARROLLO");
+        DESARROLLO.setLabel("DESARROLLO");
+        for (VTiemposSolucion ltiempo : ltiempos) {
+            DESARROLLO.set(ltiempo.getAnio(), Integer.parseInt(ltiempo.getIncidentes()));
+            System.out.println("desa ltiempo.getIncidentes() = " + ltiempo.getIncidentes());
+        }
+
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="comment">
+        ChartSeries PORTAL = new ChartSeries();
+        ltiempos.clear();
+        ltiempos = vTiemposSolucionFacade.findTiemposSolucion("PORTAL");
+        PORTAL.setLabel("PORTAL");
+        for (VTiemposSolucion ltiempo : ltiempos) {
+            PORTAL.set(ltiempo.getAnio(), Integer.parseInt(ltiempo.getIncidentes()));
+            System.out.println("portal ltiempo.getIncidentes() = " + ltiempo.getIncidentes());
+        }
+
+//</editor-fold>
+        model.addSeries(basedatos);
+        model.addSeries(REDES);
+        model.addSeries(INFRAESTRUCTURA);
+        model.addSeries(DESARROLLO);
+        model.addSeries(PORTAL);
+
+        return model;
     }
 
     /**
@@ -69,6 +217,7 @@ public class JSFManagedBeanConsultaBitacora implements Serializable {
     private List<Map> listaConsultaBitacora = new ArrayList<>();
 
     public void buttonAction(ActionEvent actionEvent) {
+
         try {
 
             if (findByCedulaLogin.getId() != null) {
@@ -141,6 +290,15 @@ public class JSFManagedBeanConsultaBitacora implements Serializable {
         }
 
         return lsobtwarebitacora;
+    }
+
+    /**
+     * @return the ltiempos
+     */
+    public List<VTiemposSolucion> getLtiempos() {
+        ltiempos.clear();
+        ltiempos = vTiemposSolucionFacade.findTiemposSolucion(area);
+        return ltiempos;
     }
 
 }

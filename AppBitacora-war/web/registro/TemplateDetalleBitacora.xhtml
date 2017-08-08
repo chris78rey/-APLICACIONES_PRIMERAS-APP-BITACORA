@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      >
 
     <body>
 
@@ -12,10 +13,17 @@
 
             <ui:define name="center">
                 <h:form>
+
+
+
+
+
                     <center>
 
                         <p:growl id="growl" life="2000" />
-                        <h:panelGrid style="font-size: 13px;text-align: center"  >
+                        <h:panelGrid style="font-size: 13px;text-align: center;height:300px"  >
+
+
 
                             <h3><h:outputText value="Consulta Bitácora"/></h3>
                             <br/>
@@ -33,56 +41,50 @@
                             <h:panelGroup>
                                 <br/>
                                 <br/>
-                                <p:dataTable  value="#{consulta.listaConsultaBitacora}" var="item">
+                                <p:dataTable  value="#{consulta.ltiempos}" var="item">
 
                                     <p:column style="font-size: 13px;width: 50px"  >
                                         <f:facet name="header">
-                                            <h:outputText style="font: sans-serif;font-size: x-small" value="HORA"/>
+                                            <h:outputText style="font: sans-serif;font-size: x-small" value="AÑO"/>
                                         </f:facet>
-                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.HORA}"/>
+                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.anio}"/>
                                     </p:column>
-
 
                                     <p:column style="font-size: 13px;width: 50px"  >
-                                        <f:facet name="header">
-                                            <h:outputText style="font: sans-serif;font-size: x-small" value="HORA SOLUCION"/>
-                                        </f:facet>
-                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.HORA_SOLUCION}"/>
-                                    </p:column>
-
-
-                                    <p:column style="font-size: 13px;width: 50px"  >
-                                        <f:facet name="header">
-                                            <h:outputText style="font: sans-serif;font-size: x-small" value="HORA REGISTRO"/>
-                                        </f:facet>
-                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.FECHA}"/>
-                                    </p:column>
-
-
-
-                                    <p:column style="font-size: 13px;width: 50px">
                                         <f:facet name="header">
                                             <h:outputText style="font: sans-serif;font-size: x-small" value="AREA"/>
                                         </f:facet>
-                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.AREA}"/>
+                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.area}"/>
                                     </p:column>
-                                    <p:column style="font-size: 13px;width: 150px">
+
+
+                                    <p:column style="font-size: 13px;width: 50px"  >
                                         <f:facet name="header">
-                                            <h:outputText style="font: sans-serif;font-size: x-small" value="EVENTO"/>
+                                            <h:outputText style="font: sans-serif;font-size: x-small" value="TOTAL INCIDENTES"/>
                                         </f:facet>
-                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.EVENTO}"/>
+                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.incidentes}"/>
                                     </p:column>
-                                    <p:column>
+
+
+
+                                    <p:column style="font-size: 13px;width: 50px"  >
                                         <f:facet name="header">
-                                            <h:outputText style="font: sans-serif;font-size: x-small" value="SOLUCION"/>
+                                            <h:outputText style="font: sans-serif;font-size: x-small" value="TIEMPO MEDIO SOLUCIÓN"/>
                                         </f:facet>
-                                        <p:inputTextarea  style="font: sans-serif;font-size: x-small" rows="50" cols="100" readonly="true" value="#{item.SOLUCION}" />
+                                        <h:outputText style="font: sans-serif;font-size: x-small" value="#{item.tiempoMedioSolucion}"/>
                                     </p:column>
+
+
 
                                 </p:dataTable>
+
+
+
+
+
                             </h:panelGroup>
                         </h:panelGrid>
-
+                        <p:chart type="line" model="#{consulta.lineModel2}" style="height:300px;"/>
                     </center>
                 </h:form>
             </ui:define>
